@@ -107,7 +107,7 @@ if [ ! -z "$MODULE_PATH" ]; then
     if [ "$MODULE_SKIPMOUNT" = "0" ] && [ "$MODULE_UPDATE_SKIPMOUNT" = "1" ]; then
         FORCE=1 # force assert
     fi
-    if ! [ "$MODULE_SKIPMOUNT" = "1" ] && [ "$MODULE_UPDATE_SKIPMOUNT" = "1" ]; then
+    if [ "$MODULE_SKIPMOUNT" != "1" ] || [ "$MODULE_UPDATE_SKIPMOUNT" != "1" ]; then
         assert_not_exists "system/"
         assert_not_exists "vendor/"
         assert_not_exists "product/"
