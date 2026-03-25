@@ -1,0 +1,5 @@
+id=hot-install
+name=Hot Install Module
+version=0.0.1-dev
+versionCode=1
+description=Directly install or upgrade some supported module without reboot. (Run with 'action' button)
