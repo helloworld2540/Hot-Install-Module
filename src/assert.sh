@@ -2,7 +2,7 @@
 # assert.sh
 # assert a module can be hot-install
 
-MODDIR=${0%/*} 
+MODDIR=${0%/*}
 # MODULE_PATH must export by module script
 . "$MODDIR/import-meta.sh" # import meta
 . "$MODDIR/utils.sh" # import utils
@@ -13,7 +13,7 @@ if [ "$SELF_INSTALLED" = "0" ]; then
 fi
 
 assert_failed(){
-    if [ -z $1 ]; then
+    if [ -z "$1" ]; then
         echo -e "[!] Cannot hot install $MODULE_NAME."
     else
         echo -e "[!] Cannot hot install $MODULE_NAME: $1."
