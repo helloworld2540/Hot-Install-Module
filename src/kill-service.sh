@@ -10,6 +10,10 @@ ROOT_DIR="$1"
 files_list=$(get_relative_files "$ROOT_DIR")
 
 for file in $files_list; do
+    # allow hot install self
+    if [ "$ROOT_DIR/$file" = "$0" ]; then
+        continue
+    fi
     if PID=$(pgrep -f "$ROOT_DIR/$file"); then
         kill -9 "$PID"
     fi
