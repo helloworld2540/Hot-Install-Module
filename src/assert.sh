@@ -103,7 +103,7 @@ if [ ! -z "$MODULE_PATH" ]; then
     [ "$MODULE_ISMETA" = "1" ] && assert_failed "it is a meta-module"
     [ "$MODULE_REAL_ISMETA" = "1" ] && assert_failed "it is a meta-module"
     # assert no mount required
-    if [ "$MODULE_SKIPMOUNT" = "0" ] && [ "$MODULE_UPDATE_SKIPMOUNT" = "0" ]; then
+    if ! [ "$MODULE_SKIPMOUNT" = "1" ] && [ "$MODULE_UPDATE_SKIPMOUNT" = "1" ]; then
         assert_not_exists "system/"
         assert_not_exists "vendor/"
         assert_not_exists "product/"
