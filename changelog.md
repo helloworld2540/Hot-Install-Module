@@ -1,3 +1,5 @@
+# 0.0.7 (7)
+- fixed failed install but display success and improve ui
 # 0.0.6 (6)
 - kill-service.sh: allow multi proccess
 # 0.0.5 (5)
