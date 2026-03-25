@@ -9,6 +9,10 @@ MODDIR=${0%/*}
 subdirs=$(get_subdirs "$MODULE_UPDATE_ROOT")
 subdirs_count=$(echo "$subdirs" | wc -l)
 failed=0
+if [ "$subdirs_count" = "0" ]; then
+    echo -e "[✓] No module to install."
+    exit 0
+fi
 echo -e "[-] Start hot install $subdirs_count modules...\n"
 
 for dir in $subdirs; do
