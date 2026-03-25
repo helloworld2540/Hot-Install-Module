@@ -14,9 +14,9 @@ fi
 
 assert_failed(){
     if [ -z "$1" ]; then
-        echo -e "[!] Cannot hot install $MODULE_NAME."
+        echo -e "[!] Cannot hot install '$MODULE_NAME'."
     else
-        echo -e "[!] Cannot hot install $MODULE_NAME: $1."
+        echo -e "[!] Cannot hot install '$MODULE_NAME': $1."
     fi
     exit 1
 }
