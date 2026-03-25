@@ -11,7 +11,7 @@ subdirs=$(get_subdirs "$MODULE_UPDATE_ROOT")
 subdirs=$(echo "$subdirs" | sed '/^$/d')
 subdirs_count=$(echo "$subdirs" | wc -l)
 failed=0
-if [ "$subdirs_count" = "0" ]; then
+if [ -z "$subdirs" ]; then
     echo -e "[✓] No module to install."
     exit 0
 fi
@@ -21,6 +21,11 @@ for dir in $subdirs; do
     echo -e "[-] Hot installing $dir..."
     "$MODDIR/hot-install.sh" "$MODULE_UPDATE_ROOT/$dir"
     failed=$(($failed + $?))
+    UI="[✓]"
+    if [ "$?" != "0" ]; then
+        UI="[!]"
+    fi
+    echo -e "$UI Installed $dir."
 done
 UI="[!]"
 if [ "$failed" = "0" ]; then
