@@ -3,3 +3,4 @@ name=Hot Install Module
 version=0.0.1-dev
 versionCode=1
 description=Directly install or upgrade some supported module without reboot. (Run with 'action' button)
+updateJson=https://github.com/helloworld2540/Hot-Install-Module/raw/refs/heads/main/update.json
