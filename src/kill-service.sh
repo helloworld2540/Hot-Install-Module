@@ -12,10 +12,7 @@ SELF_PATH=$(realpath "$0")
 
 for file in $files_list; do
     # allow hot install self
-    if [ "$ROOT_DIR/$file" = "$SELF_PATH" ]; then
-        continue
-    fi
-    if PID=$(pgrep -f "$ROOT_DIR/$file"); then
-        kill -9 "$PID"
+    if [ "$ROOT_DIR/$file" != "$SELF_PATH" ]; then
+        PID=$(pgrep -f "$ROOT_DIR/$file") && kill -9 "$PID"
     fi
 done
