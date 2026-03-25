@@ -1,3 +1,5 @@
+# 0.0.6 (6)
+- kill-service.sh: allow multi proccess
 # 0.0.5 (5)
 - fix kill-service kill self while using relative path
 # 0.0.4 (4)
