@@ -1,3 +1,5 @@
+# 0.0.5 (5)
+- fix kill-service kill self while using relative path
 # 0.0.4 (4)
 - fix kill-service killed self while hot install self
 # 0.0.3 (3)
