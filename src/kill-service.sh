@@ -14,6 +14,9 @@ fi
 files_list=$(get_relative_files "$ROOT_DIR")
 
 for file in $files_list; do
-    
-    PID=$(pgrep -f "$ROOT_DIR/$file") && kill -9 "$PID"
+    if PID=$(pgrep -f "$ROOT_DIR/$file"); then
+        for pid in $PID; do
+            kill -9 "$pid"
+        done
+    fi
 done
