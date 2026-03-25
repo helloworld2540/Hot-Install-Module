@@ -96,6 +96,10 @@ if [ ! -z "$MODULE_PATH" ]; then
     assert_not_exists "late-load.sh"
     assert_not_exists "sepolicy.rule"
     assert_not_exists "system.prop"
+    # assert not a meta-module
+    assert_not_exists "metamount.sh"
+    assert_not_exists "metainstall.sh"
+    assert_not_exists "metauninstall.sh"
     # assert no mount required
     if [ "$MODULE_SKIPMOUNT" = "1" ] && [ "$MODULE_UPDATE_SKIPMOUNT" = "1" ]; then
         assert_not_exists "system/"
