@@ -18,14 +18,15 @@ fi
 echo -e "[-] Start hot install $subdirs_count modules...\n"
 
 for dir in $subdirs; do
-    echo -e "[-] Hot installing $dir..."
+    echo -e "[-] Hot installing '$dir'..."
     "$MODDIR/hot-install.sh" "$MODULE_UPDATE_ROOT/$dir"
     failed=$(($failed + $?))
-    UI="[✓]"
-    if [ "$?" != "0" ]; then
-        UI="[!]"
+    if [ "$?" = "0" ]; then
+        echo -e "[✓] Installed '$dir'."
+    else
+        echo -e "[!] Failed to install '$dir'."
     fi
-    echo -e "$UI Installed $dir."
+    echo -e ""
 done
 UI="[!]"
 if [ "$failed" = "0" ]; then
