@@ -100,6 +100,8 @@ if [ ! -z "$MODULE_PATH" ]; then
     assert_not_exists "metamount.sh"
     assert_not_exists "metainstall.sh"
     assert_not_exists "metauninstall.sh"
+    [ "$MODULE_ISMETA" = "1" ] && assert_failed "it is a meta-module"
+    [ "$MODULE_REAL_ISMETA" = "1" ] && assert_failed "it is a meta-module"
     # assert no mount required
     if [ "$MODULE_SKIPMOUNT" = "1" ] && [ "$MODULE_UPDATE_SKIPMOUNT" = "1" ]; then
         assert_not_exists "system/"
