@@ -8,6 +8,8 @@ MODDIR=${0%/*}
 
 subdirs=$(get_subdirs "$MODULE_UPDATE_ROOT")
 subdirs_count=$(echo "$subdirs" | wc -l)
+# remove empty line
+subdirs=$(echo "$subdirs" | sed '/^$/d')
 failed=0
 if [ "$subdirs_count" = "0" ]; then
     echo -e "[✓] No module to install."
