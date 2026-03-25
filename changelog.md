@@ -1,3 +1,5 @@
+# 0.0.8 (8)
+- fix the wrong logic in assert.sh
 # 0.0.7 (7)
 - fixed failed install but display success and improve ui
 # 0.0.6 (6)
