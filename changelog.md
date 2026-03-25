@@ -1,3 +1,5 @@
+# 0.1.0 (10)
+- improve ui
 # 0.0.9 (9)
 - fix shell warning
 # 0.0.8 (8)
