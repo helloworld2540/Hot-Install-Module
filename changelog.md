@@ -1,3 +1,5 @@
+# 0.0.9 (9)
+- fix shell warning
 # 0.0.8 (8)
 - fix the wrong logic in assert.sh
 # 0.0.7 (7)
