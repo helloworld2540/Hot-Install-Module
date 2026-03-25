@@ -32,4 +32,4 @@ if [ "$UPDATE" = "y" ]; then
 fi
 rm -f "$ROOT/bin/build.zip"
 7z a "$ROOT/bin/build.zip" "$ROOT"/src/* "$ROOT"/changelog.md > /dev/null 2>&1
-[ $? -eq 0 ] && echo "Build successful: $ROOT/build.zip" || echo "Build failed."
+[ $? -eq 0 ] && echo "Build successful: $ROOT/bin/build.zip" || echo "Build failed."
