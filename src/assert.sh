@@ -14,9 +14,9 @@ fi
 
 assert_failed(){
     if [ -z $1 ]; then
-        echo -e "[!] Cannot hot install $MODULE_NAME: $FILENAME is not supported."
+        echo -e "[!] Cannot hot install $MODULE_NAME."
     else
-        echo -e "[!] Cannot hot install $MODULE_NAME: $FILENAME is not supported because $1"
+        echo -e "[!] Cannot hot install $MODULE_NAME: $1."
     fi
     exit 1
 }
@@ -27,7 +27,7 @@ assert_hash_same(){
         # assert success
         return 0
     else
-        assert_failed
+        assert_failed "file '$1' is not same."
     fi
 }
 assert_hash_same_dir(){
@@ -38,7 +38,7 @@ assert_hash_same_dir(){
             assert_hash_same "$1/$file" "$2/$file"
         done
     else
-        assert_failed
+        assert_failed "directory '$1' is not same."
     fi
 }
 assert_type_same(){
@@ -62,6 +62,7 @@ assert_not_exists() {
         update_exists=$([ -e "$UPDATED" ] && echo 1 || echo 0)
         if [ "$exists" = "1" ]; then
             if [ "$update_exists" = "1" ]; then
+                [ "$FORCE" = "1" ] && assert_failed "mount required"
                 assert_type_same "$ORIGINAL" "$UPDATED"
                 type=$(get_type "$ORIGINAL")
                 if [ "$type" = "file" ]; then
@@ -72,7 +73,7 @@ assert_not_exists() {
                     assert_failed "unsupported type '$type'"
                 fi
             else
-                assert_failed
+                assert_failed "$FILENAME is not supported to hot install"
             fi
         fi
     else
@@ -80,7 +81,7 @@ assert_not_exists() {
         UPDATED="$MODULE_UPDATE_ROOT/$FILENAME"
         exists=$([ -e "$UPDATED" ] && echo 1 || echo 0)
         if [ "$exists" = "1" ]; then
-            assert_failed
+            assert_failed "$FILENAME is not supported to hot install"
         fi
     fi
 }
@@ -103,6 +104,9 @@ if [ ! -z "$MODULE_PATH" ]; then
     [ "$MODULE_ISMETA" = "1" ] && assert_failed "it is a meta-module"
     [ "$MODULE_REAL_ISMETA" = "1" ] && assert_failed "it is a meta-module"
     # assert no mount required
+    if [ "$MODULE_SKIPMOUNT" = "0" ] && [ "$MODULE_UPDATE_SKIPMOUNT" = "1" ]; then
+        FORCE=1 # force assert
+    fi
     if ! [ "$MODULE_SKIPMOUNT" = "1" ] && [ "$MODULE_UPDATE_SKIPMOUNT" = "1" ]; then
         assert_not_exists "system/"
         assert_not_exists "vendor/"
