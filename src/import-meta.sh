@@ -25,7 +25,7 @@ else
     MODULE_REALPATH="$MAGISK_ROOT/$MODULE_NAME" # /data/adb/modules/module_name
     MODULE_INSTALLED=$([ -e "$MODULE_REALPATH" ] && echo 1 || echo 0)
     MODULE_UPDATE_SKIPMOUNT=$([ -e "$MODULE_UPDATE_ROOT/$MODULE_NAME/skip_mount" ] && echo 1 || echo 0)
-    MODULE_ISMETA=$(grep -q "metamodule=1" "$MODULE_REALPATH/module.prop" && echo 1 || echo 0)
+    MODULE_ISMETA=$(grep -q "metamodule=1" "$MODULE_UPDATE_ROOT/$MODULE_NAME/module.prop" && echo 1 || echo 0)
     # export
     export MODULE_PATH
     export MODULE_UPDATE_ROOT
