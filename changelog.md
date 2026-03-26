@@ -1,3 +1,6 @@
+# 0.1.6 (16)
+- fixed assert bugs
+- fixed hot-install bugs(install in old dir)
 # 0.1.5 (15)
 - fix assert bug
 # 0.1.4 (14)
