@@ -1,7 +1,7 @@
 id=hot-install
 name=Hot Install Module
 author=HelloWorld
-version=0.2.0
-versionCode=20
+version=0.2.2
+versionCode=22
 description=Directly install or upgrade some supported module without reboot. (Run with 'action' button)
 updateJson=https://github.com/helloworld2540/Hot-Install-Module/raw/refs/heads/main/update.json

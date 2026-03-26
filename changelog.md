@@ -1,3 +1,7 @@
+# 0.2.2 (22)
+- enhanced ui
+# 0.2.1 (21)
+- enhanced ui
 # 0.2.0 (20)
 - refactor code, enhanced assert.sh logic and eliminate edge cases
 # 0.1.7 (17)
