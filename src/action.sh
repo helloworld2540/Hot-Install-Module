@@ -15,8 +15,9 @@ if [ -z "$subdirs" ]; then
     echo -e "[✓] No module to install."
     exit 0
 fi
-echo -e "[-] Start hot install $subdirs_count modules...\n"
-
+if [ "$subdirs_count" != "1" ]; then
+    echo -e "[-] Start hot install $subdirs_count modules...\n"
+fi
 for dir in $subdirs; do
     echo -e "[-] Hot installing '$dir'..."
     if "$MODDIR/hot-install.sh" "$MODULE_UPDATE_ROOT/$dir"; then
@@ -31,11 +32,17 @@ UI="[!]"
 if [ "$failed" = "0" ]; then
     UI="[✓]"
 fi
-WAS_OR_WERE="were"
+
 if [ "$subdirs_count" = "1" ]; then
-    WAS_OR_WERE="was"
+    if [ "$failed" = "0" ]; then
+        echo -e "$UI 1 module was installed successfully."
+    else
+        echo -e "$UI 1 module was installed failed."
+    fi
+else
+    echo -e "$UI $subdirs_count modules were installed, with $(($subdirs_count - $failed)) success and $failed failed."
+
 fi
-echo -e "$UI $subdirs_count modules $WAS_OR_WERE installed, with $(($subdirs_count - $failed)) success and $failed failed."
 if [ "$failed" != "0" ]; then
     echo -e "[!] Reboot required to complete the installation."
 fi
