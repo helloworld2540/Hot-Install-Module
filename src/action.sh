@@ -41,7 +41,6 @@ if [ "$subdirs_count" = "1" ]; then
     fi
 else
     echo -e "$UI $subdirs_count modules were installed, with $(($subdirs_count - $failed)) success and $failed failed."
-
 fi
 if [ "$failed" != "0" ]; then
     echo -e "[!] Reboot required to complete the installation."

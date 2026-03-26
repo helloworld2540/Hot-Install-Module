@@ -7,7 +7,6 @@ ROOT_DIR="$1"
 . "$MODDIR/import-meta.sh" # import meta
 . "$MODDIR/utils.sh" # import utils
 
-
 files_list=$(get_relative_files "$ROOT_DIR")
 
 for file in $files_list; do

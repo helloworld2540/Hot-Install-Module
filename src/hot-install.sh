@@ -34,7 +34,6 @@ start_hot_install(){
     fi
 }
 
-
 MODDIR=${0%/*}
 . "$MODDIR/import-meta.sh" # import meta
 . "$MODDIR/assert.sh" # assert can hot-install
