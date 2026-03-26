@@ -56,7 +56,7 @@ assert_type_same(){
 assert_not_exists() {
     if [ "$MODULE_INSTALLED" = "1" ]; then
         FILENAME=$1
-        UPDATED="$MODULE_UPDATE_ROOT/$FILENAME"
+        UPDATED="$MODULE_UPDATE_ROOT/$MODULE_NAME/$FILENAME"
         ORIGINAL="$MODULE_REALPATH/$FILENAME"
         exists=$([ -e "$ORIGINAL" ] && echo 1 || echo 0)
         update_exists=$([ -e "$UPDATED" ] && echo 1 || echo 0)
