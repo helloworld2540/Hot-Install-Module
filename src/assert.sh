@@ -60,9 +60,9 @@ assert_not_exists() {
         ORIGINAL="$MODULE_REALPATH/$FILENAME"
         exists=$([ -e "$ORIGINAL" ] && echo 1 || echo 0)
         update_exists=$([ -e "$UPDATED" ] && echo 1 || echo 0)
-        if [ "$exists" = "1" ]; then
+        if [ "$update_exists" = "1" ]; then
             [ "$FORCE" = "1" ] && assert_failed "required mount to '$FILENAME'"
-            if [ "$update_exists" = "1" ]; then
+            if [ "$exists" = "1" ]; then
                 assert_type_same "$ORIGINAL" "$UPDATED"
                 type=$(get_type "$ORIGINAL")
                 if [ "$type" = "file" ]; then
