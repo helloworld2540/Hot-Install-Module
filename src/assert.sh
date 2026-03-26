@@ -16,7 +16,7 @@ assert_failed(){
     if [ -z "$1" ]; then
         echo -e "[!] Cannot hot install '$MODULE_NAME'."
     else
-        echo -e "[!] Cannot hot install '$MODULE_NAME': $1."
+        echo -e "[!] Cannot hot install '$MODULE_NAME': $1"
     fi
     exit 1
 }
@@ -118,7 +118,7 @@ assert_not_exists_dir(){
 
 if [ ! -z "$MODULE_PATH" ]; then
     if [ "$MODULE_REMOVED" = "1" ]; then
-        assert_failed "module removed"
+        assert_failed "module was removed."
     fi
     export ALLOW_REMOVE=0 # not allow remove these files
     export ALLOW_SAME=1
