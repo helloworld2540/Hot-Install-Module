@@ -34,7 +34,12 @@ MODDIR=${0%/*}
 . "$MODDIR/utils.sh" # import utils
 
 if [ "$MODULE_INSTALLED" = "1" ]; then
-    "$MODDIR/kill-service.sh" "$MODULE_REALPATH"
+    if [ "$MODULE_NAME" = "hot-install" ]; then
+        echo -e "[-] Detected hot installing 'Hot Install Module'..."
+        echo -e "[-] Skip kill service."
+    else
+        "$MODDIR/kill-service.sh" "$MODULE_REALPATH"
+    fi
     rm -rf "$MODULE_REALPATH"
 fi
 start_hot_install

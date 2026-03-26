@@ -35,7 +35,7 @@ WAS_OR_WERE="were"
 if [ "$subdirs_count" = "1" ]; then
     WAS_OR_WERE="was"
 fi
-echo -e "$UI $subdirs_count modules $WAS_OR_WERE successfully installed, with $(($subdirs_count - $failed)) successful and $failed failing."
+echo -e "$UI $subdirs_count modules $WAS_OR_WERE installed, with $(($subdirs_count - $failed)) success and $failed failed."
 if [ "$failed" != "0" ]; then
     echo -e "[!] Reboot required to complete the installation."
 fi

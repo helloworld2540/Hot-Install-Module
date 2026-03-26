@@ -26,6 +26,7 @@ else
     MODULE_INSTALLED=$([ -e "$MODULE_REALPATH" ] && echo 1 || echo 0)
     MODULE_UPDATE_SKIPMOUNT=$([ -e "$MODULE_UPDATE_ROOT/$MODULE_NAME/skip_mount" ] && echo 1 || echo 0)
     MODULE_ISMETA=$(grep -q "metamodule=1" "$MODULE_UPDATE_ROOT/$MODULE_NAME/module.prop" && echo 1 || echo 0)
+    MODULE_FIRST_INTSTALL=$([ -e "$MODULE_REALPATH" ] && echo 0 || echo 1)
     # export
     export MODULE_PATH
     export MODULE_UPDATE_ROOT
@@ -34,6 +35,7 @@ else
     export MODULE_INSTALLED
     export MODULE_UPDATE_SKIPMOUNT
     export MODULE_ISMETA
+    export MODULE_FIRST_INTSTALL
     
     if [ "$MODULE_INSTALLED" = "1" ]; then
         MODULE_DISABLED=$([ -e "$MODULE_REALPATH/disable" ] && echo 1 || echo 0)
