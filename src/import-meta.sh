@@ -4,6 +4,7 @@
 # MODULE_PATH must export by module script
 
 # variables
+MODDIR=${0%/*}
 MAGISK_ROOT="/data/adb/modules" 
 SELF_MODDIR="${0%/*}" # /data/adb/modules/hot-install
 SELF_MODROOT="${SELF_MODDIR%/*}" # /data/adb/modules
@@ -19,21 +20,20 @@ if [ -z "$MODULE_PATH" ]; then
     MODULE_UPDATE_ROOT="/data/adb/modules_update"
     export MODULE_UPDATE_ROOT
 else
-    MODULE_PATH=${MODULE_PATH%/} # remove last /
+    MODULE_PATH=${MODULE_PATH%/} # remove last / /data/adb/modules_update/module_name
     MODULE_UPDATE_ROOT=${MODULE_PATH%/*} # /data/adb/modules_update/
     MODULE_NAME=${MODULE_PATH##*/} # module_name
     MODULE_REALPATH="$MAGISK_ROOT/$MODULE_NAME" # /data/adb/modules/module_name
     
+    . "$MODDIR/utils.sh" # import utils
     MODULE_INSTALLED=1
     if [ ! -d "$MODULE_REALPATH" ];then
         MODULE_INSTALLED=0
-    elif FILE_COUNT=$(ls -A "$MODULE_REALPATH" | wc -l); then
+    elif FILE_COUNT=$(get_subchild "$MODULE_REALPATH" | wc -l); then
         FILE_COUNT=$(echo "$FILE_COUNT" | xargs)
         if [ "$FILE_COUNT" = "2" ] && [ -e "$MODULE_REALPATH/module.prop" ] && [ -e "$MODULE_REALPATH/update" ];then
             MODULE_INSTALLED=0
         fi
-    else
-        MODULE_INSTALLED=0
     fi
     MODULE_UPDATE_SKIPMOUNT=$([ -e "$MODULE_UPDATE_ROOT/$MODULE_NAME/skip_mount" ] && echo 1 || echo 0)
     MODULE_ISMETA=$(grep -q "metamodule=1" "$MODULE_UPDATE_ROOT/$MODULE_NAME/module.prop" && echo 1 || echo 0)

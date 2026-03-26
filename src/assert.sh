@@ -20,108 +20,129 @@ assert_failed(){
     fi
     exit 1
 }
-assert_hash_same(){
-    hash_original=$(sha256sum "$1" -b)
-    hash_update=$(sha256sum "$2" -b)
-    if [ "$hash_original" = "$hash_update" ]; then
-        # assert success
-        return 0
-    else
-        assert_failed "file '$1' is not same."
-    fi
-}
-assert_hash_same_dir(){
-    file_original=$(get_relative_files "$1")
-    file_update=$(get_relative_files "$2")
-    if [ "$file_original" = "$file_update" ]; then
-        for file in $file_original; do
-            assert_hash_same "$1/$file" "$2/$file"
-        done
-    else
-        assert_failed "directory '$1' is not same."
-    fi
-}
-assert_type_same(){
-    TARGET1="$1"
-    TARGET2="$2"
-    type1=$(get_type "$TARGET1")
-    type2=$(get_type "$TARGET2")
-    if [ "$type1" = "$type2" ]; then
-        # assert success
-        return 0
-    else
-        assert_failed "$TARGET1 is $type1, but $TARGET2 is $type2"
-    fi
-}
-assert_not_exists() {
+
+assert_not_exists(){
     FILENAME=$1
-    UPDATED="$MODULE_UPDATE_ROOT/$MODULE_NAME/$FILENAME"
-    if [ "$MODULE_INSTALLED" = "1" ]; then
+    TYPE_REQUIRED=$2
+    # the variables set by user:
+    # ALLOW_SAME: allow same file exists
+    # ALLOW_REMOVE: allow remove file
+    
+    # variables set up
+    UPDATE="$MODULE_PATH/$FILENAME"
+    ORIGINAL="$MODULE_REALPATH/$FILENAME"
+    
+    # get realpath of UPDATE and ORIGINAL
+    if ! UPDATE=$(realpath "$UPDATE"); then
+        UPDATE="$MODULE_PATH/$FILENAME"
+    fi
+    if ! ORIGINAL=$(realpath "$ORIGINAL"); then
         ORIGINAL="$MODULE_REALPATH/$FILENAME"
-        exists=$([ -e "$ORIGINAL" ] && echo 1 || echo 0)
-        update_exists=$([ -e "$UPDATED" ] && echo 1 || echo 0)
-        if [ "$update_exists" = "1" ]; then
-            [ "$FORCE" = "1" ] && assert_failed "required mount to '$FILENAME'"
-            if [ "$exists" = "1" ]; then
-                assert_type_same "$ORIGINAL" "$UPDATED"
-                type=$(get_type "$ORIGINAL")
-                if [ "$type" = "file" ]; then
-                    assert_hash_same "$ORIGINAL" "$UPDATED"
-                elif [ "$type" = "dir" ]; then
-                    assert_hash_same_dir "$ORIGINAL" "$UPDATED"
+    fi
+    
+    if [ -e "$UPDATE" ]; then
+        UPDATE_EXISTS=1
+        UPDATE_TYPE="$(get_type "$UPDATE")"
+        UPDATE_TYPE_SAME=$([ "$TYPE_REQUIRED" = "$UPDATE_TYPE" ] && echo 1 || echo 0)
+    else
+        UPDATE_EXISTS=0
+    fi
+    if [ -e "$ORIGINAL" ]; then
+        ORIGINAL_EXISTS=1
+        ORIGINAL_TYPE="$(get_type "$ORIGINAL")"
+        ORIGINAL_TYPE_SAME=$([ "$TYPE_REQUIRED" = "$ORIGINAL_TYPE" ] && echo 1 || echo 0)
+    else
+        ORIGINAL_EXISTS=0
+    fi
+    if [ "$UPDATE_EXISTS" = "1" ]; then
+        if [ "$UPDATE_TYPE_SAME" = "1" ]; then
+            if [ "$ALLOW_SAME" = "1" ]; then
+                if [ "$ORIGINAL_EXISTS" = "1" ]; then
+                    if [ "$ORIGINAL_TYPE_SAME" = "1" ]; then
+                        if [ "$TYPE_REQUIRED" = "dir" ]; then
+                            if is_hash_same_dir "$ORIGINAL" "$UPDATE"; then
+                                # assert success
+                                return 0
+                            else
+                                assert_failed "module that required mount is not supported to hot-install: '$FILENAME' is found."
+                            fi
+                        else
+                            if is_hash_same_file "$ORIGINAL" "$UPDATE"; then
+                                # assert success
+                                return 0
+                            else
+                                assert_failed "file '$FILENAME' is not supported to hot-install."
+                            fi
+                        fi
+                    fi
                 else
-                    assert_failed "unsupported type '$type'"
+                    assert_failed "file '$FILENAME' is not supported to hot-install."
                 fi
             else
-                if [ -d "$FILENAME" ];then
-                    assert_failed "required mount to '$FILENAME'"
-                else
-                    assert_failed "'$FILENAME' is not supported to hot install"
-                fi
+                assert_failed "file '$FILENAME' is not supported to hot-install."
             fi
+        else
+            assert_failed "file '$FILENAME' is not supported to hot-install."
         fi
     else
-        exists=$([ -e "$UPDATED" ] && echo 1 || echo 0)
-        if [ "$exists" = "1" ]; then
-            if [ -d "$FILENAME" ];then
-                assert_failed "required mount to '$FILENAME'"
+        if [ "$ALLOW_REMOVE" = "1" ]; then
+            # assert success
+            return 0
+        else
+            if [ "$MODULE_INSTALLED" = "1" ]; then
+                if [ "$ORIGINAL_EXISTS" = "1" ]; then
+                    if [ "$ORIGINAL_TYPE_SAME" = "1" ]; then
+                        assert_failed "file '$FILENAME' is not supported to removed via hot-install."
+                    else
+                        # assert success
+                        return 0
+                    fi
+                else
+                    # assert success
+                    return 0
+                fi
             else
-            assert_failed "'$FILENAME' is not supported to hot install"
+                # assert success
+                return 0
             fi
         fi
     fi
+}
+
+assert_not_exists_file(){
+    assert_not_exists "$1" "file"
+}
+assert_not_exists_dir(){
+    assert_not_exists "$1" "dir"
 }
 
 if [ ! -z "$MODULE_PATH" ]; then
     if [ "$MODULE_REMOVED" = "1" ]; then
         assert_failed "module removed"
     fi
+    export ALLOW_REMOVE=0 # not allow remove these files
+    export ALLOW_SAME=1
     # assert not exists the script that depends on boot up
-    assert_not_exists "post-fs-data.sh"
-    assert_not_exists "post-mount.sh"
-    assert_not_exists "boot-completed.sh"
-    assert_not_exists "late-load.sh"
-    assert_not_exists "sepolicy.rule"
-    assert_not_exists "system.prop"
+    assert_not_exists_file "post-fs-data.sh"
+    assert_not_exists_file "post-mount.sh"
+    assert_not_exists_file "boot-completed.sh"
+    assert_not_exists_file "late-load.sh"
+    assert_not_exists_file "sepolicy.rule"
+    assert_not_exists_file "system.prop"
     # assert not a meta-module
-    assert_not_exists "metamount.sh"
-    assert_not_exists "metainstall.sh"
-    assert_not_exists "metauninstall.sh"
-    [ "$MODULE_ISMETA" = "1" ] && assert_failed "it is a meta-module"
-    [ "$MODULE_REAL_ISMETA" = "1" ] && assert_failed "it is a meta-module"
+    assert_not_exists_file "metamount.sh"
+    assert_not_exists_file "metainstall.sh"
+    assert_not_exists_file "metauninstall.sh"
     # assert cannot hot-install zygisk module
-    assert_not_exists "zygisk/"
-    # assert no mount required
-    if [ "$MODULE_SKIPMOUNT" = "0" ] && [ "$MODULE_UPDATE_SKIPMOUNT" = "1" ]; then
-        FORCE=1 # force assert
-    fi
+    assert_not_exists_dir "zygisk/"
+    
     if [ "$MODULE_INSTALLED" = "0" ] || [ "$MODULE_SKIPMOUNT" != "1" ] || [ "$MODULE_UPDATE_SKIPMOUNT" != "1" ]; then
-        assert_not_exists "system/"
-        assert_not_exists "vendor/"
-        assert_not_exists "product/"
-        assert_not_exists "system_ext/"
-        assert_not_exists "odm/"
-        assert_not_exists "oem/"
-        assert_not_exists "apex/"
+        assert_not_exists_dir "system/"
+        assert_not_exists_dir "vendor/"
+        assert_not_exists_dir "product/"
+        assert_not_exists_dir "system_ext/"
+        assert_not_exists_dir "odm/"
+        assert_not_exists_dir "oem/"
+        assert_not_exists_dir "apex/"
     fi
 fi
