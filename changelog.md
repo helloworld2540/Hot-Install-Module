@@ -1,3 +1,5 @@
+# 0.2.0 (20)
+- refactor code, enhanced assert.sh logic and eliminate edge cases
 # 0.1.7 (17)
 - add assert to prevent hot install zygisk module.
 # 0.1.6 (16)
