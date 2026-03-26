@@ -109,6 +109,8 @@ if [ ! -z "$MODULE_PATH" ]; then
     assert_not_exists "metauninstall.sh"
     [ "$MODULE_ISMETA" = "1" ] && assert_failed "it is a meta-module"
     [ "$MODULE_REAL_ISMETA" = "1" ] && assert_failed "it is a meta-module"
+    # assert cannot hot-install zygisk module
+    assert_not_exists "zygisk/"
     # assert no mount required
     if [ "$MODULE_SKIPMOUNT" = "0" ] && [ "$MODULE_UPDATE_SKIPMOUNT" = "1" ]; then
         FORCE=1 # force assert
