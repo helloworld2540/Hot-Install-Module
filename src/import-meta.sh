@@ -23,10 +23,20 @@ else
     MODULE_UPDATE_ROOT=${MODULE_PATH%/*} # /data/adb/modules_update/
     MODULE_NAME=${MODULE_PATH##*/} # module_name
     MODULE_REALPATH="$MAGISK_ROOT/$MODULE_NAME" # /data/adb/modules/module_name
-    MODULE_INSTALLED=$([ -e "$MODULE_REALPATH" ] && echo 1 || echo 0)
+    
+    MODULE_INSTALLED=1
+    if [ ! -d "$MODULE_REALPATH" ];then
+        MODULE_INSTALLED=0
+    elif FILE_COUNT=$(ls -A "$MODULE_REALPATH" | wc -l); then
+        FILE_COUNT=$(echo "$FILE_COUNT" | xargs)
+        if [ "$FILE_COUNT" = "2" ] && [ -e "$MODULE_REALPATH/module.prop" ] && [ -e "$MODULE_REALPATH/update" ];then
+            MODULE_INSTALLED=0
+        fi
+    else
+        MODULE_INSTALLED=0
+    fi
     MODULE_UPDATE_SKIPMOUNT=$([ -e "$MODULE_UPDATE_ROOT/$MODULE_NAME/skip_mount" ] && echo 1 || echo 0)
     MODULE_ISMETA=$(grep -q "metamodule=1" "$MODULE_UPDATE_ROOT/$MODULE_NAME/module.prop" && echo 1 || echo 0)
-    MODULE_FIRST_INTSTALL=$([ -e "$MODULE_REALPATH" ] && echo 0 || echo 1)
     # export
     export MODULE_PATH
     export MODULE_UPDATE_ROOT
@@ -35,7 +45,6 @@ else
     export MODULE_INSTALLED
     export MODULE_UPDATE_SKIPMOUNT
     export MODULE_ISMETA
-    export MODULE_FIRST_INTSTALL
     
     if [ "$MODULE_INSTALLED" = "1" ]; then
         MODULE_DISABLED=$([ -e "$MODULE_REALPATH/disable" ] && echo 1 || echo 0)

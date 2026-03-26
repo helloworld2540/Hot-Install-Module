@@ -61,7 +61,7 @@ assert_not_exists() {
         exists=$([ -e "$ORIGINAL" ] && echo 1 || echo 0)
         update_exists=$([ -e "$UPDATED" ] && echo 1 || echo 0)
         if [ "$exists" = "1" ]; then
-            [ "$FORCE" = "1" ] && assert_failed "mount required"
+            [ "$FORCE" = "1" ] && assert_failed "required mount to '$FILENAME'"
             if [ "$update_exists" = "1" ]; then
                 assert_type_same "$ORIGINAL" "$UPDATED"
                 type=$(get_type "$ORIGINAL")
@@ -73,7 +73,11 @@ assert_not_exists() {
                     assert_failed "unsupported type '$type'"
                 fi
             else
-                assert_failed "'$FILENAME' is not supported to hot install"
+                if [ -d "$FILENAME" ];then
+                    assert_failed "required mount to '$FILENAME'"
+                else
+                    assert_failed "'$FILENAME' is not supported to hot install"
+                fi
             fi
         fi
     else
@@ -81,7 +85,11 @@ assert_not_exists() {
         UPDATED="$MODULE_UPDATE_ROOT/$FILENAME"
         exists=$([ -e "$UPDATED" ] && echo 1 || echo 0)
         if [ "$exists" = "1" ]; then
+            if [ -d "$FILENAME" ];then
+                assert_failed "required mount to '$FILENAME'"
+            else
             assert_failed "'$FILENAME' is not supported to hot install"
+            fi
         fi
     fi
 }
@@ -107,10 +115,7 @@ if [ ! -z "$MODULE_PATH" ]; then
     if [ "$MODULE_SKIPMOUNT" = "0" ] && [ "$MODULE_UPDATE_SKIPMOUNT" = "1" ]; then
         FORCE=1 # force assert
     fi
-    if [ "$MODULE_FIRST_INTSTALL" = "1" ]; then
-        FORCE=1 # force assert
-    fi
-    if [ "$MODULE_FIRST_INTSTALL" = "1" ] || [ "$MODULE_SKIPMOUNT" != "1" ] || [ "$MODULE_UPDATE_SKIPMOUNT" != "1" ]; then
+    if [ "$MODULE_INSTALLED" = "0" ] || [ "$MODULE_SKIPMOUNT" != "1" ] || [ "$MODULE_UPDATE_SKIPMOUNT" != "1" ]; then
         assert_not_exists "system/"
         assert_not_exists "vendor/"
         assert_not_exists "product/"
