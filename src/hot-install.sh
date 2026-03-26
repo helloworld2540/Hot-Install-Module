@@ -10,6 +10,12 @@ fi
 export MODULE_PATH="$1"
 
 start_hot_install(){
+    # clear old file
+    if [ -d "$MODULE_REALPATH" ];then
+        rm -rf "$MODULE_REALPATH"
+    elif [ -f "$MODULE_REALPATH" ];then
+        rm -f "$MODULE_REALPATH"
+    fi
     # install
     cp -a "$MODULE_UPDATE_ROOT/$MODULE_NAME" "$MODULE_REALPATH"
     if [ "$MODULE_DISABLED" = "1" ]; then
@@ -20,6 +26,7 @@ start_hot_install(){
     fi
     # clean up
     rm -rf "${MODULE_UPDATE_ROOT:?}/$MODULE_NAME"
+    
     # restart service.sh
     if [ -e "$MODULE_REALPATH/service.sh" ]; then
         export HOT_INSTALLED=1
@@ -40,6 +47,5 @@ if [ "$MODULE_INSTALLED" = "1" ]; then
     else
         "$MODDIR/kill-service.sh" "$MODULE_REALPATH"
     fi
-    rm -rf "$MODULE_REALPATH"
 fi
 start_hot_install
