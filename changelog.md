@@ -1,3 +1,5 @@
+# 0.1.7 (17)
+- add assert to prevent hot install zygisk module.
 # 0.1.6 (16)
 - fixed assert bugs
 - fixed hot-install bugs(install in old dir)
