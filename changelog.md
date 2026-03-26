@@ -1,3 +1,5 @@
+# 0.1.5 (15)
+- fix assert bug
 # 0.1.4 (14)
 - enhanced assert
 # 0.1.3 (13)
