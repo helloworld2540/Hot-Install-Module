@@ -121,18 +121,20 @@ if [ ! -z "$MODULE_PATH" ]; then
         assert_failed "module was removed."
     fi
     export ALLOW_REMOVE=0 # not allow remove these files
-    export ALLOW_SAME=1
+    export ALLOW_SAME=0 # not allow same files
     # assert not exists the script that depends on boot up
     assert_not_exists_file "post-fs-data.sh"
     assert_not_exists_file "post-mount.sh"
     assert_not_exists_file "boot-completed.sh"
     assert_not_exists_file "late-load.sh"
-    assert_not_exists_file "sepolicy.rule"
-    assert_not_exists_file "system.prop"
     # assert not a meta-module
     assert_not_exists_file "metamount.sh"
     assert_not_exists_file "metainstall.sh"
     assert_not_exists_file "metauninstall.sh"
+    
+    export ALLOW_SAME=1 # allow same files
+    assert_not_exists_file "sepolicy.rule"
+    assert_not_exists_file "system.prop"
     # assert cannot hot-install zygisk module
     assert_not_exists_dir "zygisk/"
     
