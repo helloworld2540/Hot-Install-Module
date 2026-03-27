@@ -1,3 +1,5 @@
+# 0.2.3 (23)
+- enhanced assert.sh
 # 0.2.2 (22)
 - enhanced ui
 # 0.2.1 (21)
